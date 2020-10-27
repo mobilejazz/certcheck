@@ -1,0 +1,19 @@
+services:
+  certcheck:
+    image: mobilejazz/certcheck
+    volumes:
+     - ./msmtprc:/etc/msmtprc
+    environment: 
+     - MARGIN_DAYS=6
+     - DOMAINS=example.com anotherdomain.com expired-rsa-dv.ssl.com
+     - MAIL_TO=your@email.com
+    command: tail -f /dev/null
+    labels:
+     - deck-chores.certcheck.command=/certcheck.sh
+     - deck-chores.certcheck.interval=daily
+
+  chores:
+    image: funkyfuture/deck-chores:1
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
